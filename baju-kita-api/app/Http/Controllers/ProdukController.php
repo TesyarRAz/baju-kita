@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kategori;
 use App\Models\Produk;
+use GuzzleHttp\Handler\Proxy;
 use Illuminate\Http\Request;
 
 class ProdukController extends Controller
@@ -12,9 +14,33 @@ class ProdukController extends Controller
         $this->middleware(['auth:sanctum', 'role:admin'])->except(['index', 'show']);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $produk = Produk::all();
+        if ($request->type == 'recommended')
+        {
+            $kategori = Kategori::all();
+
+            $produk = collect();
+
+            foreach ($kategori as $item)
+            {
+                $produk = $produk->merge(Produk::orderByBuyed()->where('kategori_id', $item->id)->take(2)->get());
+            }
+
+            return $this->response($produk, 1, 'Success');
+        }
+
+        $produk = Produk::orderByBuyed();
+
+        if ($kategori_id = $request->kategori_id) {
+            $produk->where('kategori_id', $kategori_id);
+        }
+
+        if ($search = $request->search) {
+            $produk->where('name', 'like', '%' . $search . '%');
+        }
+
+        $produk = $produk->get();
 
         return $this->response($produk, 1, 'Success');
     }
@@ -25,7 +51,8 @@ class ProdukController extends Controller
             'name' => 'required',
             'price' => 'required',
             'image' => 'nullable|file|image',
-            'description' => 'required',
+            'bahan' => 'required',
+            'stok' => 'required|numeric',
             'kategori_id' => 'required|exists:kategoris,id',
         ]);
 
@@ -50,7 +77,8 @@ class ProdukController extends Controller
             'name' => 'required',
             'price' => 'required',
             'image' => 'nullable|file|image',
-            'description' => 'required',
+            'bahan' => 'required',
+            'stok' => 'required|numeric',
             'kategori_id' => 'required|exists:kategoris,id',
         ]);
 

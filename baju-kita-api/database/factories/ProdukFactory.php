@@ -20,7 +20,8 @@ class ProdukFactory extends Factory
         return [
             'name' => $this->faker->name,
             'price' => $this->faker->numberBetween(10000, 100000),
-            'description' => $this->faker->paragraph,
+            'bahan' => $this->faker->name,
+            'stok' => $this->faker->numberBetween(1, 200),
             'kategori_id' => Kategori::factory()->create()->id,
         ];
     }

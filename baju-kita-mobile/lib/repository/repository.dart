@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:bajukita/model/api_response.dart';
 
 class Repository {
-  ApiResponse parseResponse(dynamic data) {
-    return ApiResponse.fromJson(jsonDecode(data));
+  ApiResponse<T> parseResponse<T>(dynamic data) {
+    return ApiResponse.fromJson<T>(data);
   }
 }

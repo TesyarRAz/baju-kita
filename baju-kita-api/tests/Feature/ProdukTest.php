@@ -19,14 +19,7 @@ class ProdukTest extends TestCase
 
     public function test_store_authorized()
     {
-        $kategori = Kategori::factory()->create();
-
-        $data = [
-            'name' => 'Produk Test',
-            'price' => '100000',
-            'kategori_id' => $kategori->id,
-            'description' => 'description random',
-        ];
+        $data = Produk::factory()->make()->toArray();
 
         $response = $this->actingAdmin()->post('/api/produk', $data);
 
@@ -37,30 +30,17 @@ class ProdukTest extends TestCase
 
     public function test_store_unauthorized()
     {
-        $kategori = Kategori::factory()->create();
+        $data = Produk::factory()->make()->toArray();
 
-        $response = $this->post('/api/produk', [
-            'name' => 'Produk Test',
-            'price' => '100000',
-            'kategori_id' => $kategori->id,
-            'description' => 'description random',
-        ]);
+        $response = $this->post('/api/produk', $data);
 
         $response->assertStatus(401);
     }
 
     public function test_update_authorized()
     {
-        $kategori = Kategori::factory()->create();
         $produk = Produk::factory()->create();
-
-        $data = [
-            'id' => $produk->id,
-            'name' => 'Produk Test',
-            'price' => '100000',
-            'kategori_id' => $kategori->id,
-            'description' => 'description random',
-        ];
+        $data = Produk::factory()->make()->toArray();
 
         $response = $this->actingAdmin()->put('/api/produk/' . $produk->id, $data);
 
@@ -73,14 +53,9 @@ class ProdukTest extends TestCase
     {
         $kategori = Kategori::factory()->create();
         $produk = Produk::factory()->create();
+        $data = Produk::factory()->make()->toArray();
 
-        $data = [
-            'id' => $produk->id,
-            'name' => 'Produk Test',
-            'price' => '100000',
-            'kategori_id' => $kategori->id,
-            'description' => 'description random',
-        ];
+        $data['id'] = $produk->id;
 
         $response = $this->put('/api/produk/' . $produk->id, $data);
 

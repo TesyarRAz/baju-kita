@@ -4,10 +4,30 @@ import 'package:bajukita/repository/api.dart';
 import 'package:bajukita/repository/repository.dart';
 
 class ProdukRepository extends Repository {
-  Future<List<Produk>?> listProduk() async {
-    var response = await Api.dio.get('/produk');
+  Future<List<Produk>?> recommended() async {
+    var response = await Api.dio.get('/produk', queryParameters: {
+      'type': 'recommended',
+    });
 
-    var data = parseResponse(response.data);
+    var data = parseResponse<List<dynamic>>(response.data);
+
+    return data.data.map((e) => Produk.fromJson(e)).toList();
+  }
+
+  Future<List<Produk>?> list({int? kategoriId, String? search}) async {
+    var query = <String, dynamic>{};
+
+    if (kategoriId != null) {
+      query['kategori_id'] = kategoriId;
+    }
+
+    if (search != null) {
+      query['search'] = search;
+    }
+
+    var response = await Api.dio.get('/produk', queryParameters: query);
+
+    var data = parseResponse<List<dynamic>>(response.data);
 
     return data.data.map((e) => Produk.fromJson(e)).toList();
   }

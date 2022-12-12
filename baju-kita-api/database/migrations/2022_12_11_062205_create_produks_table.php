@@ -19,7 +19,8 @@ return new class extends Migration
             $table->string('name');
             $table->unsignedInteger('price');
             $table->string('image')->nullable();
-            $table->text('description');
+            $table->string('bahan');
+            $table->integer('stok');
             
             $table->foreignIdFor(Kategori::class)->constrained();
             

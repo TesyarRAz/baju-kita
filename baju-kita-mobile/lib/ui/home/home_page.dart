@@ -1,10 +1,12 @@
+import 'package:bajukita/data/static.dart';
 import 'package:bajukita/ui/akun/akun_page.dart';
 import 'package:bajukita/ui/dashboard/dashboard_page.dart';
 import 'package:bajukita/ui/keranjang/keranjang_page.dart';
+import 'package:bajukita/ui/login/goto_login_info_page.dart';
+import 'package:bajukita/ui/notifikasi/notifikasi_page.dart';
 import 'package:bajukita/ui/produk/produk_page.dart';
+import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -19,32 +21,57 @@ class _HomePageState extends State<HomePage> {
   final page = [
     const DashboardPage(),
     const ProdukPage(),
-    const KeranjangPage(),
-    const AkunPage(),
+    DataStatic.user != null ? const NotifikasiPage() : GotoLoginInfoPage(),
+    DataStatic.user != null ? const AkunPage() : GotoLoginInfoPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: page[_selectedPage],
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          title: const Text(
+            'BAJUKITA',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shop),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shop_2),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_box),
-          ),
-        ],
-        onTap: (index) => setState(() {
-          _selectedPage = index;
-        }),
+          centerTitle: true,
+          actions: [
+            if (DataStatic.user != null)
+              IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.shopping_cart),
+              ),
+          ],
+        ),
+        body: page[_selectedPage],
+        extendBody: true,
+        bottomNavigationBar: DotNavigationBar(
+          backgroundColor: Colors.black,
+          currentIndex: _selectedPage,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.white70,
+          enablePaddingAnimation: false,
+          items: [
+            DotNavigationBarItem(
+              icon: const Icon(Icons.home),
+            ),
+            DotNavigationBarItem(
+              icon: const Icon(Icons.shopping_bag),
+            ),
+            DotNavigationBarItem(
+              icon: const Icon(Icons.notifications),
+            ),
+            DotNavigationBarItem(
+              icon: const Icon(Icons.account_box),
+            ),
+          ],
+          onTap: (index) => setState(() {
+            _selectedPage = index;
+          }),
+        ),
       ),
     );
   }

@@ -1,14 +1,16 @@
 class Produk {
   final String name;
   final int price;
-  final String description;
+  final String bahan;
+  final int stok;
   final int kategoriId;
   final String image;
 
   Produk({
     required this.name,
     required this.price,
-    required this.description,
+    required this.bahan,
+    required this.stok,
     required this.kategoriId,
     required this.image,
   });
@@ -17,7 +19,8 @@ class Produk {
     return Produk(
       name: map['name'],
       price: map['price'],
-      description: map['description'],
+      bahan: map['bahan'],
+      stok: map['stok'],
       kategoriId: map['kategori_id'],
       image: map['image'],
     );

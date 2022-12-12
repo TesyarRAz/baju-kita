@@ -10,6 +10,10 @@ class DetailTransaksi extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+    
+    protected $casts = [
+        'total_price' => 'integer',
+    ];
 
     public function transaksi()
     {

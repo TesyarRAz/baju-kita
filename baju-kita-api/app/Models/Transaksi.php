@@ -11,6 +11,10 @@ class Transaksi extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'total_price' => 'integer',
+    ];
+
     public function detail_transaksis()
     {
         return $this->hasMany(DetailTransaksi::class);
