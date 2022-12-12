@@ -1,6 +1,8 @@
 import 'package:bajukita/model/produk.dart';
+import 'package:bajukita/model/transaksi.dart';
 import 'package:bajukita/ui/home/home_page.dart';
 import 'package:bajukita/ui/kategori/admin_kategori_modify_page.dart';
+import 'package:bajukita/ui/keranjang/checkout_page.dart';
 import 'package:bajukita/ui/keranjang/keranjang_page.dart';
 import 'package:bajukita/ui/login/login_page.dart';
 import 'package:bajukita/ui/produk/admin_produk_modify_page.dart';
@@ -25,8 +27,8 @@ class Routes {
   static const produk = '/produk';
   static const detailproduk = '/produk/detail';
   static const keranjang = '/keranjang';
-  static const transaksi = '/transaksi';
   static const detailtransaksi = '/transaksi/detail';
+  static const checkout = '/transaksi/checkout';
 
   static const adminprodukmodify = '/admin/produk/modify';
   static const adminkategorimodify = '/admin/kategori/modify';
@@ -42,12 +44,13 @@ class Routes {
         ),
     Routes.detailproduk: (_, args) => DetailProdukPage(produk: args! as Produk),
     Routes.keranjang: (_, args) => const KeranjangPage(),
-    Routes.transaksi: (_, args) => const TransaksiPage(),
-    Routes.detailtransaksi: (_, args) => const DetailTransaksiPage(),
+    Routes.detailtransaksi: (_, args) =>
+        DetailTransaksiPage(transaksi: args! as Transaksi),
     Routes.adminprodukmodify: (_, args) => const AdminProdukModifyPage(),
     Routes.adminkategorimodify: (_, args) => const AdminKategoriModifyPage(),
     Routes.admintransaksi: (_, args) => const AdminTransaksiPage(),
     Routes.admindetailtransaksi: (_, args) => const AdminDetailTransaksiPage(),
+    Routes.checkout: (_, args) => const CheckoutPage(),
   };
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {

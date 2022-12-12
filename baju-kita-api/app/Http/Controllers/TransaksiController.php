@@ -23,6 +23,8 @@ class TransaksiController extends Controller
             $transaksi = $user->transaksis();
         }
 
+        $transaksi->with('detail_transaksis.produk');
+
         $transaksi = $transaksi->get();
 
         return $this->response($transaksi, 1, 'Success');
@@ -32,10 +34,34 @@ class TransaksiController extends Controller
     {
         $user = $request->user();
 
-        if ($request->type == 'checkout') {
+        if ($request->mode == 'checkout') {
+            $data = $request->validate([
+                'type' => 'required|in:ambil_ditempat,diantarkan',
+            ]);
+
+            if ($user->detail_transaksis()->keranjang()->count() < 1) {
+                return $this->response(null, 1, 'Keranjang kosong', 402);
+            }
+
+            $data['total_price'] = $user->detail_transaksis()->keranjang()->sum('total_price');
+
+            $transaksi = $user->transaksis()->create($data);
+
+            $user->detail_transaksis()->keranjang()->update(['transaksi_id' => $transaksi->id]);
+
+            $transaksi->load('detail_transaksis');
+
+            return $this->response($transaksi, 1, 'Success');
+        }
+
+        if ($request->mode == 'checkout_diantarkan') {
             $data = $request->validate([
                 'receipt' => 'required|file|image',
+                'address' => 'required',
+                'transaksi_id' => 'required',
             ]);
+
+            $transaksi = $user->transaksis()->whereKey($data['transaksi_id'])->firstOrFail();
 
             $receipt = $request->file('receipt');
 
@@ -45,10 +71,13 @@ class TransaksiController extends Controller
                 return $this->response(null, 1, 'Keranjang kosong', 402);
             }
 
-            $transaksi = $user->transaksis()->create($data);
+            $transaksi->load('detail_transaksis');
+            $transaksi->update($data);
 
             return $this->response($transaksi, 1, 'Success');
         }
+
+        return $this->response(null, 0, 'Failed', 402);
     }
 
     public function show(Transaksi $transaksi)

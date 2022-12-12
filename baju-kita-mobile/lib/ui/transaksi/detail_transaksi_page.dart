@@ -1,9 +1,11 @@
+import 'package:bajukita/model/transaksi.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class DetailTransaksiPage extends StatefulWidget {
-  const DetailTransaksiPage({Key? key}) : super(key: key);
+  final Transaksi transaksi;
+
+  const DetailTransaksiPage({required this.transaksi, Key? key})
+      : super(key: key);
 
   @override
   State<DetailTransaksiPage> createState() => _DetailTransaksiPageState();

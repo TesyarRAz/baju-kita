@@ -18,11 +18,11 @@ class UserTest extends TestCase
 
     public function test_login()
     {
-        $user = User::query()->inRandomOrder()->first();
+        $user = User::factory()->create();
 
         $response = $this->post('/api/login', [
             'username' => $user->username,
-            'password' => $user->password,
+            'password' => 'password',
         ]);
 
         $response->assertStatus(200);
@@ -41,9 +41,9 @@ class UserTest extends TestCase
     {
         $response = $this->post('/api/register', [
             'name' => 'User',
-            'username' => 'user',
+            'username' => $this->faker->userName(),
             'password' => 'password',
-            'email' => 'user@gmail.com',
+            'email' => $this->faker->email(),
         ]);
 
         $response->assertStatus(200)->assertJsonStructure([

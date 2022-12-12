@@ -7,13 +7,11 @@ import 'package:bajukita/repository/repository.dart';
 import 'package:dio/dio.dart';
 
 class AuthRepository extends Repository {
-  Future<User?> user(String token) async {
+  Future<User?> user() async {
     var response = await Api.dio.get(
-      '/api/user',
+      '/user',
       options: Options(
-        headers: {
-          'Authorization': 'Bearer ${token}',
-        },
+        headers: dioAuth(),
       ),
     );
 
@@ -25,7 +23,7 @@ class AuthRepository extends Repository {
   }
 
   Future<ResponseLogin?> login(Login login) async {
-    var response = await Api.dio.post('/api/login', data: {
+    var response = await Api.dio.post('/login', data: {
       'username': login.username,
       'password': login.password,
     });
@@ -38,7 +36,7 @@ class AuthRepository extends Repository {
   }
 
   Future<ApiResponse?> register(Register register) async {
-    var response = await Api.dio.post('/api/login', data: {
+    var response = await Api.dio.post('/register', data: {
       'name': register.name,
       'username': register.username,
       'email': register.email,

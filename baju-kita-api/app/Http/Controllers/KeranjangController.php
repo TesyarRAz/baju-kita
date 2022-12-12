@@ -15,7 +15,7 @@ class KeranjangController extends Controller
 
     public function index(Request $request)
     {
-        $keranjang = $request->user()->detail_transaksi()->keranjang()->get();
+        $keranjang = $request->user()->detail_transaksis()->keranjang()->with('produk')->get();
 
         return $this->response($keranjang, 1, "Success");
     }
@@ -30,11 +30,14 @@ class KeranjangController extends Controller
         $produk_id = $request->input('produk_id');
         $qty = $request->input('qty');
 
-        $detail_transaksi = $request->user()->detail_transaksis()->firstOrNew([
+        $produk = Produk::find($produk_id);
+
+        $detail_transaksi = $request->user()->detail_transaksis()->keranjang()->firstOrNew([
             'produk_id' => $produk_id,
         ], ['qty' => 0]);
 
         $detail_transaksi->qty += $detail_transaksi->qty + $qty;
+        $detail_transaksi->total_price = $produk->price * $detail_transaksi->qty;
         $detail_transaksi->save();
 
         return $this->response($detail_transaksi, 1, 'Success');
@@ -48,10 +51,11 @@ class KeranjangController extends Controller
 
         $qty = $request->input('qty');
 
-        if ($detail_transaksi = $request->user()->detail_transaksi()->keranjang()->where('produk_id', $produk->id)->firstOrFail())
+        if ($detail_transaksi = $request->user()->detail_transaksis()->keranjang()->where('produk_id', $produk->id)->firstOrFail())
         {
             $detail_transaksi->update([
                 'qty' => $qty,
+                'total_price' => $qty * $detail_transaksi->produk->price,
             ]);
 
             return $this->response($detail_transaksi, 1, 'Success');

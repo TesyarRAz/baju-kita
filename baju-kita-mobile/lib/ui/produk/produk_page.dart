@@ -1,3 +1,4 @@
+import 'package:bajukita/data/static.dart';
 import 'package:bajukita/model/kategori.dart';
 import 'package:bajukita/model/produk.dart';
 import 'package:bajukita/repository/kategori_repository.dart';
@@ -33,6 +34,15 @@ class _ProdukPageState extends State<ProdukPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'BAJUKITA',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
       body: ListView(
         children: [
           Padding(

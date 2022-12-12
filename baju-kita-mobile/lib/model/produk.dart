@@ -1,4 +1,5 @@
 class Produk {
+  final int id;
   final String name;
   final int price;
   final String bahan;
@@ -7,6 +8,7 @@ class Produk {
   final String image;
 
   Produk({
+    required this.id,
     required this.name,
     required this.price,
     required this.bahan,
@@ -17,6 +19,7 @@ class Produk {
 
   factory Produk.fromJson(Map<String, dynamic> map) {
     return Produk(
+      id: map['id'],
       name: map['name'],
       price: map['price'],
       bahan: map['bahan'],

@@ -27,4 +27,4 @@ Route::apiResource('kategori', KategoriController::class);
 Route::apiResource('produk', ProdukController::class);
 
 Route::apiResource('transaksi', TransaksiController::class);
-Route::apiResource('keranjang', KeranjangController::class);
+Route::apiResource('keranjang', KeranjangController::class)->parameter('keranjang', 'produk');

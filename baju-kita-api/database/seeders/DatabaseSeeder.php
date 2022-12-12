@@ -28,6 +28,14 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
+        User::create([
+            'name' => 'User',
+            'username' => 'user',
+            'email' => 'user@localhost.com',
+            'password' => Hash::make('password'),
+            'role' => 'user',
+        ]);
+
         $kategoris = [
             'kemeja' => Kategori::create(['name' => 'Kemeja']),
             'jeans' => Kategori::create(['name' => 'Jeans']),

@@ -15,6 +15,12 @@ class Transaksi extends Model
         'total_price' => 'integer',
     ];
 
+    public static function booting() {
+        static::creating(function($transaksi) {
+            $transaksi->invoice_code = 'INV' . now()->format('dmyhis');
+        });
+    }
+
     public function detail_transaksis()
     {
         return $this->hasMany(DetailTransaksi::class);

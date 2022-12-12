@@ -36,6 +36,8 @@ class UserController extends Controller
                 'user' => $user,
             ], 1, 'Success');
         }
+
+        return $this->response(null, 0, 'Error', 401);
     }
 
     public function register(Request $request)

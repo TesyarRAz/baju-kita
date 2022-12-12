@@ -25,6 +25,11 @@ class DetailTransaksi extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function produk()
+    {
+        return $this->belongsTo(Produk::class);
+    }
+
     public function scopeKeranjang($query)
     {
         return $query->whereNull('transaksi_id');

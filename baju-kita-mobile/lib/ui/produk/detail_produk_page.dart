@@ -1,11 +1,13 @@
 import 'package:bajukita/data/static.dart';
 import 'package:bajukita/model/produk.dart';
+import 'package:bajukita/repository/keranjang_repository.dart';
 import 'package:bajukita/routes.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart';
+import 'package:quantity_input/quantity_input.dart';
 
 class DetailProdukPage extends StatefulWidget {
   final Produk produk;
@@ -17,6 +19,8 @@ class DetailProdukPage extends StatefulWidget {
 }
 
 class _DetailProdukPageState extends State<DetailProdukPage> {
+  int? _qtyBuy = 1;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,6 +34,7 @@ class _DetailProdukPageState extends State<DetailProdukPage> {
         centerTitle: true,
         leading: const BackButton(),
       ),
+      extendBody: true,
       body: Container(
         color: Colors.black,
         child: ListView(
@@ -126,6 +131,59 @@ class _DetailProdukPageState extends State<DetailProdukPage> {
                             ),
                           ],
                         ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Kuantitas",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                            ),
+                            QuantityInput(
+                              buttonColor: Colors.white,
+                              iconColor: Colors.black,
+                              type: QuantityInputType.int,
+                              acceptsNegatives: false,
+                              minValue: 1,
+                              decoration: const InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white,
+                              ),
+                              value: _qtyBuy,
+                              onChanged: (v) => setState(() {
+                                _qtyBuy = int.tryParse(v);
+                              }),
+                            )
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Total Harga",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                            ),
+                            Text(
+                              NumberFormat.currency(
+                                locale: 'id',
+                                symbol: 'Rp. ',
+                                decimalDigits: 0,
+                              ).format((widget.produk.price * (_qtyBuy ?? 0))),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -165,21 +223,28 @@ class _DetailProdukPageState extends State<DetailProdukPage> {
                 },
               );
             } else {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return const SimpleDialog(
-                    title: Text('Kuantitas'),
-                    contentPadding: EdgeInsets.all(10),
-                    children: [
-                      TextField(
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(horizontal: 5),
-                          // border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ],
+              KeranjangRepository().store(widget.produk.id, _qtyBuy ?? 1).then(
+                (value) {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        content: Text('Berhasil simpan ke keranjang'),
+                        actions: [
+                          TextButton(
+                            child: Text('Ya'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
                   );
+
+                  setState(() {
+                    _qtyBuy = 1;
+                  });
                 },
               );
             }

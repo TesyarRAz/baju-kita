@@ -42,6 +42,8 @@ dependencies:
   intl: ^0.17.0
   cached_network_image: ^3.2.1
   floating_navbar: ^2.0.2
+  quantity_input: ^1.0.2
+  basic_utils: ^5.4.2
 
 dev_dependencies:
   flutter_test:

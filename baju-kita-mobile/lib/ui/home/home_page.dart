@@ -3,8 +3,8 @@ import 'package:bajukita/ui/akun/akun_page.dart';
 import 'package:bajukita/ui/dashboard/dashboard_page.dart';
 import 'package:bajukita/ui/keranjang/keranjang_page.dart';
 import 'package:bajukita/ui/login/goto_login_info_page.dart';
-import 'package:bajukita/ui/notifikasi/notifikasi_page.dart';
 import 'package:bajukita/ui/produk/produk_page.dart';
+import 'package:bajukita/ui/transaksi/transaksi_page.dart';
 import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -21,8 +21,8 @@ class _HomePageState extends State<HomePage> {
   final page = [
     const DashboardPage(),
     const ProdukPage(),
-    DataStatic.user != null ? const NotifikasiPage() : GotoLoginInfoPage(),
-    DataStatic.user != null ? const AkunPage() : GotoLoginInfoPage(),
+    DataStatic.user != null ? const TransaksiPage() : const GotoLoginInfoPage(),
+    DataStatic.user != null ? const AkunPage() : const GotoLoginInfoPage(),
   ];
 
   @override
@@ -30,22 +30,6 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          title: const Text(
-            'BAJUKITA',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          centerTitle: true,
-          actions: [
-            if (DataStatic.user != null)
-              IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.shopping_cart),
-              ),
-          ],
-        ),
         body: page[_selectedPage],
         extendBody: true,
         bottomNavigationBar: DotNavigationBar(
@@ -62,7 +46,7 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(Icons.shopping_bag),
             ),
             DotNavigationBarItem(
-              icon: const Icon(Icons.notifications),
+              icon: const Icon(Icons.inventory),
             ),
             DotNavigationBarItem(
               icon: const Icon(Icons.account_box),

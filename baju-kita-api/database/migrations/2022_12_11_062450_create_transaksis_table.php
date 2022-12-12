@@ -18,7 +18,9 @@ return new class extends Migration
             $table->id();
             $table->string('invoice_code');
             $table->unsignedInteger('total_price');
-            $table->string('receipt');
+            $table->string('receipt')->nullable();
+            $table->enum('type', ['ambil_ditempat', 'diantarkan'])->default('ambil_ditempat');
+            $table->text('address')->nullable();
             
             $table->foreignIdFor(User::class)->constrained();
 
