@@ -77,63 +77,111 @@ class _KeranjangPageState extends State<KeranjangPage> {
                             children: [
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  CachedNetworkImage(
-                                    imageUrl: data.produk!.image,
-                                    height: 80,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                  Expanded(
+                                    child: Row(
                                       children: [
-                                        Text(
-                                          data.produk!.name,
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
+                                        CachedNetworkImage(
+                                          imageUrl: data.produk!.image,
+                                          height: 80,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                data.produk!.name,
+                                                style: const TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Text(
+                                                NumberFormat.currency(
+                                                  locale: 'id',
+                                                  symbol: 'Rp. ',
+                                                  decimalDigits: 0,
+                                                ).format(data.produk!.price),
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              Align(
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                child: QuantityInput(
+                                                  minValue: 1,
+                                                  type: QuantityInputType.int,
+                                                  acceptsNegatives: false,
+                                                  acceptsZero: false,
+                                                  buttonColor: Colors.black,
+                                                  iconColor: Colors.white,
+                                                  value: data.qty,
+                                                  onChanged: (value) {
+                                                    int? qty =
+                                                        int.tryParse(value);
+
+                                                    setState(() {
+                                                      data.qty =
+                                                          qty ?? data.qty;
+                                                      data.totalPrice = data
+                                                              .qty *
+                                                          (data.produk?.price ??
+                                                              0);
+                                                    });
+
+                                                    KeranjangRepository()
+                                                        .update(data.produkId,
+                                                            data.qty);
+
+                                                    _calculateTotalHarga();
+                                                  },
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        Text(
-                                          NumberFormat.currency(
-                                            locale: 'id',
-                                            symbol: 'Rp. ',
-                                            decimalDigits: 0,
-                                          ).format(data.produk!.price),
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.centerRight,
-                                          child: QuantityInput(
-                                            minValue: 1,
-                                            type: QuantityInputType.int,
-                                            acceptsNegatives: false,
-                                            acceptsZero: false,
-                                            buttonColor: Colors.black,
-                                            iconColor: Colors.white,
-                                            value: data.qty,
-                                            onChanged: (value) {
-                                              int? qty = int.tryParse(value);
-
-                                              setState(() {
-                                                data.qty = qty ?? data.qty;
-                                                data.totalPrice = data.qty *
-                                                    (data.produk?.price ?? 0);
-                                              });
-
-                                              KeranjangRepository().update(
-                                                  data.produkId, data.qty);
-
-                                              _calculateTotalHarga();
-                                            },
-                                          ),
-                                        )
                                       ],
                                     ),
                                   ),
+                                  IconButton(
+                                    icon: Icon(Icons.delete),
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text('Pertanyaan'),
+                                            content:
+                                                Text('Yakin ingin dihapus?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  KeranjangRepository()
+                                                      .delete(data.produkId)
+                                                      .then((value) {
+                                                    Navigator.of(context).pop();
+                                                    _fetchData(true);
+                                                  });
+                                                },
+                                                child: Text('Ya'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text('Tidak'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                  )
                                 ],
                               ),
                             ],
@@ -202,19 +250,28 @@ class _KeranjangPageState extends State<KeranjangPage> {
                         TextButton(
                           child: const Text('Ambil ditempat'),
                           onPressed: () {
-                            TransaksiRepository()
-                                .checkoutDitempat()
-                                .then((value) {
-                              Navigator.of(context).pushNamed(
-                                Routes.detailtransaksi,
-                                arguments: value,
-                              );
-                            });
+                            TransaksiRepository().checkoutDitempat().then(
+                              (value) {
+                                Navigator.of(context).pushNamed(
+                                  Routes.detailtransaksi,
+                                  arguments: value,
+                                );
+                              },
+                            );
                           },
                         ),
                         TextButton(
-                          onPressed: () {},
                           child: const Text('Diantarkan'),
+                          onPressed: () {
+                            TransaksiRepository().checkoutDiantarkan().then(
+                              (value) {
+                                Navigator.of(context).pushNamed(
+                                  Routes.checkout,
+                                  arguments: value,
+                                );
+                              },
+                            );
+                          },
                         ),
                       ],
                     );

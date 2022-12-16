@@ -1,15 +1,23 @@
+import 'package:bajukita/model/transaksi.dart';
+import 'package:bajukita/widget/upload_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:intl/intl.dart';
 
 class CheckoutPage extends StatefulWidget {
-  const CheckoutPage({Key? key}) : super(key: key);
+  final Transaksi transaksi;
+  const CheckoutPage({required this.transaksi, Key? key}) : super(key: key);
 
   @override
   State<CheckoutPage> createState() => _CheckoutPageState();
 }
 
 class _CheckoutPageState extends State<CheckoutPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _txtNameController = TextEditingController();
+  final _txtAlamatController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,7 +135,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
+                          children: [
                             Text(
                               'Sejumlah',
                               style: TextStyle(
@@ -135,7 +143,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               ),
                             ),
                             Text(
-                              'Sejumlah',
+                              NumberFormat.currency(
+                                locale: 'id',
+                                symbol: 'Rp. ',
+                                decimalDigits: 0,
+                              ).format(widget.transaksi.totalPrice),
                               style: TextStyle(
                                 fontSize: 14,
                               ),
@@ -143,6 +155,91 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           ],
                         ),
                       ],
+                    ),
+                  ),
+                ),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          Text(
+                            'Data Penerima',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          TextFormField(
+                            controller: _txtNameController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Nama Penerima',
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 5,
+                              ),
+                            ),
+                            validator: ((value) {
+                              if (value?.isEmpty ?? true) {
+                                return "Nama penerima harus diisi";
+                              }
+                              return null;
+                            }),
+                          ),
+                          SizedBox(height: 20),
+                          TextFormField(
+                            controller: _txtAlamatController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Alamat Penerima',
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 5,
+                              ),
+                            ),
+                            keyboardType: TextInputType.multiline,
+                            validator: ((value) {
+                              if (value?.isEmpty ?? true) {
+                                return "Alamat penerima harus diisi";
+                              }
+                              return null;
+                            }),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Bukti Pembayaran',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        UploadImageWidget(),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Text(
+                      'Simpan',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),

@@ -50,7 +50,7 @@ class Routes {
     Routes.adminkategorimodify: (_, args) => const AdminKategoriModifyPage(),
     Routes.admintransaksi: (_, args) => const AdminTransaksiPage(),
     Routes.admindetailtransaksi: (_, args) => const AdminDetailTransaksiPage(),
-    Routes.checkout: (_, args) => const CheckoutPage(),
+    Routes.checkout: (_, args) => CheckoutPage(transaksi: args! as Transaksi),
   };
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {

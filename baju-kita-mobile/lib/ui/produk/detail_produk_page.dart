@@ -190,6 +190,9 @@ class _DetailProdukPageState extends State<DetailProdukPage> {
                 ),
               ],
             ),
+            const SizedBox(
+              height: 100,
+            ),
           ],
         ),
       ),

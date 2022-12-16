@@ -66,6 +66,14 @@ class _TransaksiPageState extends State<TransaksiPage> {
               return Card(
                 child: InkWell(
                   onTap: () {
+                    if (data.type == 'diantarkan' && data.status == 'request') {
+                      Navigator.of(context).pushNamed(
+                        Routes.checkout,
+                        arguments: data,
+                      );
+                      return;
+                    }
+
                     Navigator.of(context).pushNamed(
                       Routes.detailtransaksi,
                       arguments: data,
@@ -144,17 +152,6 @@ class _TransaksiPageState extends State<TransaksiPage> {
                           );
                         },
                       ).toList()),
-                      // ListView.builder(
-                      //   shrinkWrap: true,
-                      //   itemCount: data.detailTransaksis?.length,
-                      //   itemBuilder: (context, index) {
-                      //     var detail = data.detailTransaksis?[index];
-
-                      //     return ListTile(
-                      //       title: Text(detail?.produk?.name ?? ''),
-                      //     );
-                      //   },
-                      // ),
                     ],
                   ),
                 ),

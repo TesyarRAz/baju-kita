@@ -55,7 +55,7 @@ class KeranjangRepository extends Repository {
     return true;
   }
 
-  Future<bool> delete(int produkId, int qty) async {
+  Future<bool> delete(int produkId) async {
     var response = await Api.dio.delete(
       '/keranjang/$produkId',
       options: Options(

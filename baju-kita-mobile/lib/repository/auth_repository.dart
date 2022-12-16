@@ -1,4 +1,3 @@
-import 'package:bajukita/model/api_response.dart';
 import 'package:bajukita/model/login.dart';
 import 'package:bajukita/model/register.dart';
 import 'package:bajukita/model/user.dart';
@@ -35,7 +34,7 @@ class AuthRepository extends Repository {
     return ResponseLogin.fromJson(parseResponse(response.data).data);
   }
 
-  Future<ApiResponse?> register(Register register) async {
+  Future<User?> register(Register register) async {
     var response = await Api.dio.post('/register', data: {
       'name': register.name,
       'username': register.username,
@@ -47,6 +46,6 @@ class AuthRepository extends Repository {
       return null;
     }
 
-    return parseResponse(response.data);
+    return User.fromJson(parseResponse(response.data).data);
   }
 }

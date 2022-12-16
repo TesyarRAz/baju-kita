@@ -9,21 +9,24 @@ class GotoLoginInfoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            'Anda belum login, silahkan login terlebih dahulu',
-            style: TextStyle(
-              fontSize: 20,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'Anda belum login, silahkan login terlebih dahulu',
+              style: TextStyle(
+                fontSize: 20,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-          ElevatedButton(
-            child: const Text('Login'),
-            onPressed: () => Navigator.of(context).pushNamed(Routes.login),
-          ),
-        ],
+            ElevatedButton(
+              child: const Text('Login'),
+              onPressed: () => Navigator.of(context).pushNamed(Routes.login),
+            ),
+          ],
+        ),
       ),
     );
   }

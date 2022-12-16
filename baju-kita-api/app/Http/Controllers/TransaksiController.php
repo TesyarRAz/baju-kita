@@ -43,6 +43,8 @@ class TransaksiController extends Controller
                 return $this->response(null, 1, 'Keranjang kosong', 402);
             }
 
+            $data['session_status'] = 'request';
+            $data['recipient'] = $user->name;
             $data['total_price'] = $user->detail_transaksis()->keranjang()->sum('total_price');
 
             $transaksi = $user->transaksis()->create($data);
@@ -50,13 +52,13 @@ class TransaksiController extends Controller
             $user->detail_transaksis()->keranjang()->update(['transaksi_id' => $transaksi->id]);
 
             $transaksi->load('detail_transaksis');
-
             return $this->response($transaksi, 1, 'Success');
         }
 
         if ($request->mode == 'checkout_diantarkan') {
             $data = $request->validate([
                 'receipt' => 'required|file|image',
+                'recipient' => 'required',
                 'address' => 'required',
                 'transaksi_id' => 'required',
             ]);
@@ -89,7 +91,7 @@ class TransaksiController extends Controller
     {
         if ($request->type == 'update_status') {
             $data = $request->validate([
-                'status' => 'required|in:request,accepted,packing,send,done',
+                'session_status' => 'required|in:request,accepted,packing,send,done',
             ]);
 
             $transaksi->update($data);

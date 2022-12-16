@@ -63,7 +63,7 @@ class Transaksi {
       invoiceCode: map['invoice_code'],
       totalPrice: map['total_price'],
       type: map['type'],
-      status: map['status'],
+      status: map['session_status'],
       detailTransaksis: map.containsKey('detail_transaksis')
           ? (map['detail_transaksis'] as List<dynamic>)
               .map((e) => DetailTransaksi.fromJson(e))
