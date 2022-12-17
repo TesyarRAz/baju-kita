@@ -4,6 +4,8 @@ import 'package:bajukita/model/transaksi.dart';
 import 'package:bajukita/repository/transaksi_repository.dart';
 import 'package:bajukita/routes.dart';
 import 'package:bajukita/widget/upload_image_widget.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -280,9 +282,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             id: widget.transaksi.id,
                             userId: widget.transaksi.userId,
                             invoiceCode: widget.transaksi.invoiceCode,
-                            receipt: widget.transaksi.receipt,
-                            recipient: widget.transaksi.recipient,
-                            address: widget.transaksi.address,
+                            receipt: null,
+                            recipient: nama,
+                            address: alamat,
                             totalPrice: widget.transaksi.totalPrice,
                             type: widget.transaksi.type,
                             status: widget.transaksi.status,
@@ -303,6 +305,18 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               arguments: value,
                             );
                           }
+                        }, onError: (error) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              if (kDebugMode) {
+                                print((error as DioError).response?.data);
+                              }
+                              return AlertDialog(
+                                content: Text('Gagal simpan data pengiriman'),
+                              );
+                            },
+                          );
                         });
                       }
                     },
