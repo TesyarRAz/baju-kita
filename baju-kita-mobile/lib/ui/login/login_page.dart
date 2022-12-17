@@ -20,109 +20,86 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Stack(
+      appBar: AppBar(
+        title: const Text(
+          'BAJUKITA',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        leading: const BackButton(),
+      ),
+      body: Column(
         children: [
-          Container(
-            height: 200,
-            width: MediaQuery.of(context).size.width,
-            color: Colors.black,
+          SizedBox(
+            height: 50,
+          ),
+          Image.asset(
+            'assets/images/about.jpg',
+            width: 200,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
-                  'BAJUKITA',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25,
+                TextField(
+                  controller: _usernameController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Username',
+                    labelStyle: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ],
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: 50,
-              width: MediaQuery.of(context).size.width,
-              color: Colors.black,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Copright © 2022 Kelompok 4',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
+                const SizedBox(
+                  height: 10,
+                ),
+                TextField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Password',
+                    labelStyle: TextStyle(
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  TextField(
-                    controller: _usernameController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Username',
-                      labelStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Password',
-                      labelStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    obscureText: true,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text('Anda belum punya akun?'),
-                          TextButton(
-                            child: const Text('Register'),
-                            onPressed: () {
-                              Navigator.of(context).pushNamed(Routes.register);
-                            },
-                          ),
-                        ],
-                      ),
-                      ElevatedButton(
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  obscureText: true,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text('Anda belum punya akun?'),
+                        TextButton(
+                          child: const Text('Register'),
+                          onPressed: () {
+                            Navigator.of(context).pushNamed(Routes.register);
+                          },
                         ),
-                        onPressed: () {
-                          _submit();
-                        },
+                      ],
+                    ),
+                    ElevatedButton(
+                      child: const Text(
+                        'Login',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                      onPressed: () {
+                        _submit();
+                      },
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ],

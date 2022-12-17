@@ -17,7 +17,7 @@ class TransaksiController extends Controller
     {
         $user = $request->user();
 
-        if ($user->role === 'admin' && $request->type == 'pembeli') {
+        if ($user->role == 'admin') {
             $transaksi = Transaksi::query();
         } else {
             $transaksi = $user->transaksis();
@@ -25,7 +25,7 @@ class TransaksiController extends Controller
 
         $transaksi->with('detail_transaksis.produk');
 
-        $transaksi = $transaksi->get();
+        $transaksi = $transaksi->orderByRaw("FIELD(session_status, 'prepared', 'request', 'accepted', 'packing', 'send', 'done')")->get();
 
         return $this->response($transaksi, 1, 'Success');
     }
@@ -43,7 +43,7 @@ class TransaksiController extends Controller
                 return $this->response(null, 1, 'Keranjang kosong', 402);
             }
 
-            $data['session_status'] = 'request';
+            $data['session_status'] = $data['type'] == 'ambil_ditempat' ? 'request' : 'prepared';
             $data['recipient'] = $user->name;
             $data['total_price'] = $user->detail_transaksis()->keranjang()->sum('total_price');
 
@@ -51,7 +51,7 @@ class TransaksiController extends Controller
 
             $user->detail_transaksis()->keranjang()->update(['transaksi_id' => $transaksi->id]);
 
-            $transaksi->load('detail_transaksis');
+            $transaksi->load('detail_transaksis.produk');
             return $this->response($transaksi, 1, 'Success');
         }
 
@@ -63,20 +63,39 @@ class TransaksiController extends Controller
                 'transaksi_id' => 'required',
             ]);
 
-            $transaksi = $user->transaksis()->whereKey($data['transaksi_id'])->firstOrFail();
+            $transaksi = $user->role == 'admin' ? Transaksi::query() : $user->transaksis();
+
+            $transaksi = $transaksi->whereKey($data['transaksi_id'])->firstOrFail();
 
             $receipt = $request->file('receipt');
 
-            $data['receipt'] = $receipt->storePubliclyAs('/image/receipt', $receipt->hashName());
+            $data['session_status'] = 'request';
+            $data['receipt'] = $receipt->storeAs('/image/receipt', $receipt->hashName(), 'public');
 
-            if ($user->detail_transaksis()->keranjang()->count() < 1) {
-                return $this->response(null, 1, 'Keranjang kosong', 402);
-            }
-
-            $transaksi->load('detail_transaksis');
             $transaksi->update($data);
+            $transaksi->load('detail_transaksis.produk');
 
             return $this->response($transaksi, 1, 'Success');
+        }
+
+        if ($user->role == 'admin')
+        {
+            if ($request->mode == 'update_status')
+            {
+                $data = $request->validate([
+                    'session_status' => 'required|in:prepared,request,accepted,packing,send,done',
+                    'transaksi_id' => 'required|exists:transaksis,id',
+                ]);
+
+                $transaksi = Transaksi::findOrFail($data['transaksi_id']);
+
+                unset($data['transaksi_id']);
+
+                $transaksi->update($data);
+                $transaksi->load('detail_transaksis.produk');
+
+                return $this->response($transaksi, 1, 'Success');
+            }
         }
 
         return $this->response(null, 0, 'Failed', 402);

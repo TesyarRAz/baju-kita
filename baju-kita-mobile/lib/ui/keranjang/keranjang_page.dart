@@ -149,15 +149,16 @@ class _KeranjangPageState extends State<KeranjangPage> {
                                     ),
                                   ),
                                   IconButton(
-                                    icon: Icon(Icons.delete),
+                                    icon: const Icon(Icons.delete),
                                     onPressed: () {
                                       showDialog(
                                         context: context,
                                         builder: (context) {
                                           return AlertDialog(
-                                            title: Text('Pertanyaan'),
-                                            content:
-                                                Text('Yakin ingin dihapus?'),
+                                            title: const Text('Pertanyaan'),
+                                            content: const Text(
+                                              'Yakin ingin dihapus?',
+                                            ),
                                             actions: [
                                               TextButton(
                                                 onPressed: () {
@@ -168,13 +169,13 @@ class _KeranjangPageState extends State<KeranjangPage> {
                                                     _fetchData(true);
                                                   });
                                                 },
-                                                child: Text('Ya'),
+                                                child: const Text('Ya'),
                                               ),
                                               TextButton(
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text('Tidak'),
+                                                child: const Text('Tidak'),
                                               ),
                                             ],
                                           );

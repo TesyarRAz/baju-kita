@@ -1,11 +1,10 @@
 import 'package:bajukita/data/static.dart';
 import 'package:bajukita/model/produk.dart';
 import 'package:bajukita/repository/keranjang_repository.dart';
+import 'package:bajukita/repository/produk_repository.dart';
 import 'package:bajukita/routes.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart';
 import 'package:quantity_input/quantity_input.dart';
 
@@ -33,6 +32,74 @@ class _DetailProdukPageState extends State<DetailProdukPage> {
         ),
         centerTitle: true,
         leading: const BackButton(),
+        actions: [
+          if (DataStatic.user?.role == 'admin')
+            PopupMenuButton(
+              onSelected: (value) {
+                if (value == 'hapus') {
+                  showDialog<bool>(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Pertanyaan'),
+                        content: const Text('Yakin ingin dihapus?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              ProdukRepository()
+                                  .delete(widget.produk.id)
+                                  .then((value) {
+                                if (value) {
+                                  Navigator.of(context).pop(true);
+                                }
+                              });
+                            },
+                            child: const Text('Ya'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Tidak'),
+                          ),
+                        ],
+                      );
+                    },
+                  ).then((value) {
+                    if (value ?? false) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            content: Text('Berhasil hapus produk'),
+                          );
+                        },
+                      ).then((value) {
+                        Navigator.of(context).pop(true);
+                      });
+                    }
+                  });
+                } else if (value == 'edit') {
+                  Navigator.of(context).pushNamed(
+                    Routes.adminprodukmodify,
+                    arguments: widget.produk,
+                  );
+                }
+              },
+              itemBuilder: ((context) {
+                return [
+                  const PopupMenuItem<String>(
+                    value: "hapus",
+                    child: Text('Hapus'),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: "edit",
+                    child: Text('Edit'),
+                  ),
+                ];
+              }),
+            ),
+        ],
       ),
       extendBody: true,
       body: Container(
@@ -197,73 +264,79 @@ class _DetailProdukPageState extends State<DetailProdukPage> {
         ),
       ),
       resizeToAvoidBottomInset: true,
-      floatingActionButton: Builder(builder: (context) {
-        return FloatingActionButton.extended(
-          backgroundColor: Colors.white,
-          onPressed: () {
-            if (DataStatic.user == null) {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    content: const Text('Anda harus login terlebih dahulu'),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pushNamed(Routes.login);
-                        },
-                        child: const Text('Ya'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text('Tidak'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            } else {
-              KeranjangRepository().store(widget.produk.id, _qtyBuy ?? 1).then(
-                (value) {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        content: Text('Berhasil simpan ke keranjang'),
-                        actions: [
-                          TextButton(
-                            child: Text('Ya'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
+      floatingActionButton: DataStatic.user?.role == 'admin'
+          ? null
+          : Builder(builder: (context) {
+              return FloatingActionButton.extended(
+                backgroundColor: Colors.white,
+                onPressed: () {
+                  if (DataStatic.user == null) {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          content:
+                              const Text('Anda harus login terlebih dahulu'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pushNamed(Routes.login);
+                              },
+                              child: const Text('Ya'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Tidak'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    KeranjangRepository()
+                        .store(widget.produk.id, _qtyBuy ?? 1)
+                        .then(
+                      (value) {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              content:
+                                  const Text('Berhasil simpan ke keranjang'),
+                              actions: [
+                                TextButton(
+                                  child: const Text('Ya'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
 
-                  setState(() {
-                    _qtyBuy = 1;
-                  });
+                        setState(() {
+                          _qtyBuy = 1;
+                        });
+                      },
+                    );
+                  }
                 },
+                label: const Text(
+                  'Masukan ke keranjang',
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+                icon: const Icon(
+                  Icons.add_shopping_cart,
+                  color: Colors.black,
+                ),
               );
-            }
-          },
-          label: const Text(
-            'Masukan ke keranjang',
-            style: TextStyle(
-              color: Colors.black,
-            ),
-          ),
-          icon: const Icon(
-            Icons.add_shopping_cart,
-            color: Colors.black,
-          ),
-        );
-      }),
+            }),
     );
   }
 }

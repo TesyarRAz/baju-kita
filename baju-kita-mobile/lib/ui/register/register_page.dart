@@ -23,34 +23,24 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: [
-          Container(
-            height: 200,
-            margin: EdgeInsets.only(bottom: 20),
-            width: MediaQuery.of(context).size.width,
-            color: Colors.black,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Register',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                  ),
-                ),
-                Text(
-                  'BAJUKITA',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25,
-                  ),
-                ),
-              ],
+      appBar: AppBar(
+        title: Column(
+          children: const [
+            Text(
+              'BAJUKITA',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
+            Text('Register'),
+          ],
+        ),
+        centerTitle: true,
+        leading: const BackButton(),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Form(

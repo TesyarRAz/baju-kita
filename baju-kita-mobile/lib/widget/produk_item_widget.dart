@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bajukita/model/produk.dart';
 import 'package:bajukita/repository/api.dart';
 import 'package:bajukita/routes.dart';
@@ -9,8 +11,10 @@ import 'package:intl/intl.dart';
 
 class ProdukItemWidget extends StatelessWidget {
   final Produk produk;
+  final Function(Object?)? onPoppedDetail;
 
-  const ProdukItemWidget({required this.produk, Key? key}) : super(key: key);
+  const ProdukItemWidget({required this.produk, this.onPoppedDetail, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +23,9 @@ class ProdukItemWidget extends StatelessWidget {
         onTap: () => {
           Navigator.of(context)
               .pushNamed(Routes.detailproduk, arguments: produk)
+              .then((value) {
+            if (onPoppedDetail != null) onPoppedDetail!(value);
+          })
         },
         child: Padding(
           padding: const EdgeInsets.all(8.0),

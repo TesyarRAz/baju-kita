@@ -3,11 +3,10 @@ import 'package:bajukita/model/kategori.dart';
 import 'package:bajukita/model/produk.dart';
 import 'package:bajukita/repository/kategori_repository.dart';
 import 'package:bajukita/repository/produk_repository.dart';
+import 'package:bajukita/routes.dart';
 import 'package:bajukita/widget/produk_item_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class ProdukPage extends StatefulWidget {
@@ -23,6 +22,7 @@ class _ProdukPageState extends State<ProdukPage> {
   int? _filterKategori;
   String? _search;
   final _searchController = TextEditingController();
+  final _kategoriController = TextEditingController();
 
   @override
   void initState() {
@@ -42,6 +42,143 @@ class _ProdukPageState extends State<ProdukPage> {
           ),
         ),
         centerTitle: true,
+        actions: [
+          if (DataStatic.user?.role == 'admin')
+            PopupMenuButton(
+              onSelected: (value) {
+                if (value == 'tambah_kategori') {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Tambah Kategori'),
+                        content: TextField(
+                          controller: _kategoriController,
+                          decoration: const InputDecoration(
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10),
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            child: const Text('Simpan'),
+                            onPressed: () {
+                              var kategori = _kategoriController.text;
+                              if (kategori.isEmpty) {
+                                return;
+                              }
+                              KategoriRepository()
+                                  .store(kategori)
+                                  .then((value) {
+                                if (value) {
+                                  Navigator.of(context).pop();
+                                  if (value) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          content:
+                                              Text('Berhasil Tambah kategori'),
+                                        );
+                                      },
+                                    );
+                                    _kategoriController.clear();
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          content:
+                                              Text('Gagal tambah kategori'),
+                                        );
+                                      },
+                                    );
+                                  }
+
+                                  setState(() {});
+                                }
+                              });
+                            },
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Tidak'),
+                          )
+                        ],
+                      );
+                    },
+                  );
+                } else if (value == 'hapus_kategori') {
+                  KategoriRepository().list().then((value) {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return SimpleDialog(
+                          title: Text('Kategori yang ingin dihapus'),
+                          children: value
+                              ?.map((e) => TextButton(
+                                    onPressed: () {
+                                      KategoriRepository()
+                                          .delete(e.id)
+                                          .then((value) {
+                                        Navigator.of(context).pop();
+                                        if (value) {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                content: Text(
+                                                    'Berhasil hapus kategori'),
+                                              );
+                                            },
+                                          );
+                                        } else {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                content: Text(
+                                                    'Gagal hapus kategori'),
+                                              );
+                                            },
+                                          );
+                                        }
+                                        setState(() {});
+                                      });
+                                    },
+                                    child: Text(e.name),
+                                  ))
+                              .toList(),
+                        );
+                      },
+                    );
+                  });
+                } else if (value == 'tambah_produk') {
+                  Navigator.of(context).pushNamed(
+                    Routes.adminprodukmodify,
+                  );
+                }
+              },
+              itemBuilder: ((context) {
+                return [
+                  const PopupMenuItem<String>(
+                    value: "tambah_produk",
+                    child: Text('Tambah Produk'),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: "tambah_kategori",
+                    child: Text('Tambah Kategori'),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: "hapus_kategori",
+                    child: Text('Hapus Kategori'),
+                  ),
+                ];
+              }),
+            ),
+        ],
       ),
       body: ListView(
         children: [
@@ -152,6 +289,11 @@ class _ProdukPageState extends State<ProdukPage> {
                   children: snapshot.data!.map((e) {
                     return ProdukItemWidget(
                       produk: e,
+                      onPoppedDetail: (value) {
+                        if (value == true) {
+                          setState(() {});
+                        }
+                      },
                     );
                   }).toList(),
                 );

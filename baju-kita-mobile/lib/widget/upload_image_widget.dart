@@ -6,7 +6,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UploadImageWidget extends StatefulWidget {
-  final Function(Uint8List?)? onImageChange;
+  final Function(Uint8List?, String?)? onImageChange;
 
   const UploadImageWidget({Key? key, this.onImageChange}) : super(key: key);
 
@@ -16,6 +16,7 @@ class UploadImageWidget extends StatefulWidget {
 
 class _UploadImageWidgetState extends State<UploadImageWidget> {
   Uint8List? _image;
+  String? _name;
 
   void openBuktiBayar(BuildContext context) async {
     var result = await showDialog(
@@ -45,10 +46,11 @@ class _UploadImageWidgetState extends State<UploadImageWidget> {
         image.readAsBytes().then((value) {
           setState(() {
             _image = value;
+            _name = image.name;
           });
 
           if (widget.onImageChange != null) {
-            widget.onImageChange!(_image);
+            widget.onImageChange!(_image, _name);
           }
         });
       }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\PublicFileClient;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,6 +14,7 @@ class Transaksi extends Model
 
     protected $casts = [
         'total_price' => 'integer',
+        'receipt' => PublicFileClient::class,
     ];
 
     public static function booting() {

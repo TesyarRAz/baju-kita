@@ -1,3 +1,4 @@
+import 'package:bajukita/data/static.dart';
 import 'package:bajukita/model/transaksi.dart';
 import 'package:bajukita/repository/transaksi_repository.dart';
 import 'package:bajukita/routes.dart';
@@ -48,10 +49,12 @@ class _TransaksiPageState extends State<TransaksiPage> {
           }
 
           if (list.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
-                'Anda belum berbelanja',
-                style: TextStyle(
+                DataStatic.user?.role == 'admin'
+                    ? 'Belum ada yang belanja'
+                    : 'Anda belum berbelanja',
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -64,20 +67,33 @@ class _TransaksiPageState extends State<TransaksiPage> {
               var data = list[index];
 
               return Card(
+                key: ValueKey(data.id),
                 child: InkWell(
                   onTap: () {
-                    if (data.type == 'diantarkan' && data.status == 'request') {
-                      Navigator.of(context).pushNamed(
+                    if (kDebugMode) {
+                      print(data.type);
+                    }
+                    if (data.type == 'diantarkan' &&
+                        data.status == 'prepared') {
+                      Navigator.of(context)
+                          .pushNamed(
                         Routes.checkout,
                         arguments: data,
-                      );
+                      )
+                          .then((value) {
+                        _fetch(true);
+                      });
                       return;
                     }
 
-                    Navigator.of(context).pushNamed(
+                    Navigator.of(context)
+                        .pushNamed(
                       Routes.detailtransaksi,
                       arguments: data,
-                    );
+                    )
+                        .then((value) {
+                      _fetch(true);
+                    });
                   },
                   child: Column(
                     children: [
@@ -129,29 +145,30 @@ class _TransaksiPageState extends State<TransaksiPage> {
                         ),
                       ),
                       Column(
-                          children: data.detailTransaksis!.map(
-                        (e) {
-                          return ListTile(
-                            leading: CachedNetworkImage(
-                              imageUrl: e.produk!.image,
-                            ),
-                            title: Text(e.produk!.name),
-                            subtitle: Text(
-                              NumberFormat.currency(
-                                locale: 'id',
-                                symbol: 'Rp. ',
-                                decimalDigits: 0,
-                              ).format(e.produk!.price),
-                            ),
-                            trailing: Text(
-                              e.qty.toString(),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
+                        children: data.detailTransaksis!.map(
+                          (e) {
+                            return ListTile(
+                              leading: CachedNetworkImage(
+                                imageUrl: e.produk!.image,
                               ),
-                            ),
-                          );
-                        },
-                      ).toList()),
+                              title: Text(e.produk!.name),
+                              subtitle: Text(
+                                NumberFormat.currency(
+                                  locale: 'id',
+                                  symbol: 'Rp. ',
+                                  decimalDigits: 0,
+                                ).format(e.produk!.price),
+                              ),
+                              trailing: Text(
+                                e.qty.toString(),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            );
+                          },
+                        ).toList(),
+                      ),
                     ],
                   ),
                 ),
@@ -166,6 +183,7 @@ class _TransaksiPageState extends State<TransaksiPage> {
   Future<void> _fetch([bool force = false]) async {
     if (_dataListenable.value == null || force) {
       _dataListenable.value = await TransaksiRepository().list();
+      setState(() {});
     }
   }
 }

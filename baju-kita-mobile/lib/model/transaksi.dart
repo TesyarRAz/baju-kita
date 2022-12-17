@@ -40,6 +40,9 @@ class Transaksi {
   int id;
   int userId;
   String invoiceCode;
+  String? receipt;
+  String? recipient;
+  String? address;
   int totalPrice;
   String type;
   String status;
@@ -50,6 +53,9 @@ class Transaksi {
     required this.id,
     required this.userId,
     required this.invoiceCode,
+    this.receipt,
+    this.recipient,
+    this.address,
     required this.totalPrice,
     required this.type,
     required this.status,
@@ -61,6 +67,9 @@ class Transaksi {
       id: map['id'],
       userId: map['user_id'],
       invoiceCode: map['invoice_code'],
+      receipt: map['receipt'],
+      recipient: map['recipient'],
+      address: map['address'],
       totalPrice: map['total_price'],
       type: map['type'],
       status: map['session_status'],

@@ -25,7 +25,7 @@ return new class extends Migration
             
             $table->foreignIdFor(User::class)->constrained();
 
-            $table->enum('session_status', ['request', 'accepted', 'packing', 'send', 'done'])->default('request');
+            $table->enum('session_status', ['prepared', 'request', 'accepted', 'packing', 'send', 'done'])->default('prepared');
 
             $table->timestamps();
         });

@@ -58,7 +58,7 @@ class ProdukController extends Controller
 
         if ($request->hasFile('image') && $image = $request->file('image'))
         {
-            $data['image'] = $image->storePubliclyAs('/image', $image->hashName());
+            $data['image'] = $image->storeAs('/image', $image->hashName(), 'public');
         }
 
         $produk = Produk::create($data);
@@ -84,7 +84,7 @@ class ProdukController extends Controller
 
         if ($request->hasFile('image') && $image = $request->file('image'))
         {
-            $data['image'] = $image->storePubliclyAs('/image', $image->hashName());
+            $data['image'] = $image->storeAs('/image', $image->hashName(), 'public');
         }
 
         $produk->update($data);

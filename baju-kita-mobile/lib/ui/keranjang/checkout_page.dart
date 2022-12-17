@@ -1,4 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:bajukita/model/transaksi.dart';
+import 'package:bajukita/repository/transaksi_repository.dart';
+import 'package:bajukita/routes.dart';
 import 'package:bajukita/widget/upload_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -17,6 +21,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
   final _formKey = GlobalKey<FormState>();
   final _txtNameController = TextEditingController();
   final _txtAlamatController = TextEditingController();
+  Uint8List? _bukti;
+  String? _buktiName;
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +142,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
+                            const Text(
                               'Sejumlah',
                               style: TextStyle(
                                 fontSize: 14,
@@ -148,7 +154,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 symbol: 'Rp. ',
                                 decimalDigits: 0,
                               ).format(widget.transaksi.totalPrice),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 14,
                               ),
                             ),
@@ -165,17 +171,17 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       key: _formKey,
                       child: Column(
                         children: [
-                          Text(
+                          const Text(
                             'Data Penerima',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           TextFormField(
                             controller: _txtNameController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: 'Nama Penerima',
                               contentPadding: EdgeInsets.symmetric(
@@ -189,10 +195,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               return null;
                             }),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           TextFormField(
                             controller: _txtAlamatController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: 'Alamat Penerima',
                               contentPadding: EdgeInsets.symmetric(
@@ -217,15 +223,20 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: [
-                        Text(
+                        const Text(
                           'Bukti Pembayaran',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 20),
-                        UploadImageWidget(),
+                        const SizedBox(height: 20),
+                        UploadImageWidget(
+                          onImageChange: (image, name) {
+                            _bukti = image;
+                            _buktiName = name;
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -233,14 +244,68 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
+                    child: const Text(
                       'Simpan',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    onPressed: () {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        var nama = _txtNameController.text;
+                        var alamat = _txtAlamatController.text;
+                        var bukti = _bukti;
+
+                        if (nama.isEmpty ||
+                            alamat.isEmpty ||
+                            bukti == null ||
+                            _buktiName == null) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return const AlertDialog(
+                                content: Text(
+                                  'Inputan bukti pembayaran tidak boleh kosong',
+                                ),
+                              );
+                            },
+                          );
+
+                          return;
+                        }
+                        TransaksiRepository()
+                            .checkoutDiantarkanFinal(
+                          Transaksi(
+                            id: widget.transaksi.id,
+                            userId: widget.transaksi.userId,
+                            invoiceCode: widget.transaksi.invoiceCode,
+                            receipt: widget.transaksi.receipt,
+                            recipient: widget.transaksi.recipient,
+                            address: widget.transaksi.address,
+                            totalPrice: widget.transaksi.totalPrice,
+                            type: widget.transaksi.type,
+                            status: widget.transaksi.status,
+                          ),
+                          _bukti!,
+                          _buktiName!,
+                        )
+                            .then((value) {
+                          if (value != null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content:
+                                    Text('Berhasil simpan data pengiriman'),
+                              ),
+                            );
+                            Navigator.of(context).pushReplacementNamed(
+                              Routes.detailtransaksi,
+                              arguments: value,
+                            );
+                          }
+                        });
+                      }
+                    },
                   ),
                 ),
               ],

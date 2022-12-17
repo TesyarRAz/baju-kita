@@ -33,7 +33,7 @@ class _DashboardPageState extends State<DashboardPage> {
         ),
         centerTitle: true,
         actions: [
-          if (DataStatic.user != null)
+          if (DataStatic.user != null && DataStatic.user?.role != 'admin')
             IconButton(
               icon: const Icon(Icons.shopping_cart),
               onPressed: () {

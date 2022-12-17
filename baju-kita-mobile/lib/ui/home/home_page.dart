@@ -1,4 +1,5 @@
 import 'package:bajukita/data/static.dart';
+import 'package:bajukita/ui/akun/akun_drawer_widget.dart';
 import 'package:bajukita/ui/akun/akun_page.dart';
 import 'package:bajukita/ui/dashboard/dashboard_page.dart';
 import 'package:bajukita/ui/keranjang/keranjang_page.dart';
@@ -17,6 +18,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedPage = 0;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final page = [
     const DashboardPage(),
@@ -29,6 +31,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         resizeToAvoidBottomInset: true,
         body: page[_selectedPage],
         extendBody: true,
@@ -52,9 +55,11 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(Icons.account_box),
             ),
           ],
-          onTap: (index) => setState(() {
-            _selectedPage = index;
-          }),
+          onTap: (index) {
+            setState(() {
+              _selectedPage = index;
+            });
+          },
         ),
       ),
     );
