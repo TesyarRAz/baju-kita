@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     public function __construct() {
-        $this->middleware(['auth:sanctum'])->only(['index']);
+        $this->middleware(['auth:sanctum'])->only(['index', 'changePassword']);
     }
 
     public function index()
@@ -55,5 +55,23 @@ class UserController extends Controller
         $user = User::create($data);
 
         return $this->response($user, 1, 'Success');
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'old_password' => 'required',
+            'password' => 'required',
+        ]);
+
+        $user = $request->user();
+
+        if (Hash::check($request->old_password, $user->password)) {
+            $user->update(['password' => Hash::make($request->password)]);
+
+            return $this->response($user, 1, 'Success');
+        }
+
+        return $this->response($user, 0, 'Gagal', 401);
     }
 }

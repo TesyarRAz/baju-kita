@@ -33,7 +33,7 @@ class ProdukItemWidget extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               CachedNetworkImage(
-                imageUrl: produk.image,
+                imageUrl: produk.image!,
                 fit: BoxFit.cover,
                 imageBuilder: (context, imageProvider) => Image(
                   image: imageProvider,

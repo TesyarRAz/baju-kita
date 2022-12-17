@@ -80,10 +80,16 @@ class _DetailProdukPageState extends State<DetailProdukPage> {
                     }
                   });
                 } else if (value == 'edit') {
-                  Navigator.of(context).pushNamed(
+                  Navigator.of(context)
+                      .pushNamed(
                     Routes.adminprodukmodify,
                     arguments: widget.produk,
-                  );
+                  )
+                      .then((value) {
+                    if (value == true) {
+                      Navigator.of(context).pop(true);
+                    }
+                  });
                 }
               },
               itemBuilder: ((context) {
@@ -110,7 +116,7 @@ class _DetailProdukPageState extends State<DetailProdukPage> {
               height: 10,
             ),
             CachedNetworkImage(
-              imageUrl: widget.produk.image,
+              imageUrl: widget.produk.image!,
               height: 300,
               imageBuilder: (context, imageProvider) {
                 return Container(

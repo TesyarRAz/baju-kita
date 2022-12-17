@@ -84,7 +84,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                                     child: Row(
                                       children: [
                                         CachedNetworkImage(
-                                          imageUrl: data.produk!.image,
+                                          imageUrl: data.produk!.image!,
                                           height: 80,
                                         ),
                                         Padding(

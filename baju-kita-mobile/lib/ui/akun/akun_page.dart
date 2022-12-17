@@ -57,20 +57,75 @@ class _AkunPageState extends State<AkunPage> {
           children: [
             ListTile(
               title: const Text(
+                'Tentang Kami',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              onTap: () {
+                Navigator.of(context).pushNamed(Routes.about);
+              },
+            ),
+            ListTile(
+              title: const Text(
+                'Support',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              onTap: () {
+                Navigator.of(context).pushNamed(Routes.support);
+              },
+            ),
+            ListTile(
+              title: const Text(
+                'Ganti Password',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              onTap: () {
+                Navigator.of(context).pushNamed(Routes.changepass);
+              },
+            ),
+            ListTile(
+              title: const Text(
                 'Logout',
                 style: TextStyle(
                   fontSize: 20,
                 ),
               ),
               onTap: () {
-                DataStatic.user = null;
-                DataStatic.token = null;
-                SharedPreferences.getInstance().then((pref) {
-                  pref.remove('token');
-                });
+                showDialog<bool>(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('Pertanyaan'),
+                      content: const Text('Yakin ingin logout?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            DataStatic.user = null;
+                            DataStatic.token = null;
+                            SharedPreferences.getInstance().then((pref) {
+                              pref.remove('token');
+                            });
 
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil(Routes.home, (route) => false);
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                Routes.home, (route) => false);
+                          },
+                          child: const Text('Ya'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('Tidak'),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             ),
           ],

@@ -47,25 +47,31 @@ class _DetailTransaksiPageState extends State<DetailTransaksiPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Chip(
-                  label: Text(
-                    StringUtils.capitalize(widget.transaksi.status),
-                    style: const TextStyle(
-                      color: Colors.white,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Chip(
+                      label: Text(
+                        StringUtils.capitalize(widget.transaksi.status),
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      backgroundColor: Colors.green,
                     ),
-                  ),
-                  backgroundColor: Colors.green,
-                ),
-                const Text(
-                  'Kode Invoice',
-                  style: TextStyle(
-                    fontSize: 24,
-                  ),
-                ),
-                QrImage(
-                  data: widget.transaksi.invoiceCode,
-                  size: 200,
+                    const Text(
+                      'Kode Invoice',
+                      style: TextStyle(
+                        fontSize: 24,
+                      ),
+                    ),
+                    QrImage(
+                      data: widget.transaksi.invoiceCode,
+                      size: 200,
+                    ),
+                  ],
                 ),
                 Visibility(
                   visible: widget.transaksi.type == 'ambil_ditempat',
@@ -101,7 +107,7 @@ class _DetailTransaksiPageState extends State<DetailTransaksiPage> {
                                   child: Row(
                                     children: [
                                       CachedNetworkImage(
-                                        imageUrl: data.produk!.image,
+                                        imageUrl: data.produk!.image!,
                                         height: 80,
                                       ),
                                       Padding(
@@ -164,133 +170,137 @@ class _DetailTransaksiPageState extends State<DetailTransaksiPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Penerima: ${widget.transaksi.recipient}',
-                      style: const TextStyle(
-                        fontSize: 19,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        'Penerima: ${widget.transaksi.recipient}',
+                        style: const TextStyle(
+                          fontSize: 19,
+                        ),
                       ),
-                    ),
-                    Text(
-                      'Alamat Penerima: ${widget.transaksi.address}',
-                      style: const TextStyle(
-                        fontSize: 19,
+                      Text(
+                        'Alamat Penerima: ${widget.transaksi.address}',
+                        style: const TextStyle(
+                          fontSize: 19,
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    if (widget.transaksi.receipt != null)
-                      Column(
-                        children: [
-                          const Text(
-                            'Bukti Pembayaran',
-                            style: TextStyle(
-                              fontSize: 19,
-                            ),
-                          ),
-                          CachedNetworkImage(
-                            imageUrl: widget.transaksi.receipt!,
-                            height: 300,
-                          ),
-                        ],
+                      const SizedBox(
+                        height: 20,
                       ),
-                    if (DataStatic.user?.role == 'admin')
-                      Column(
-                        children: [
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Update Status',
-                                style: TextStyle(
-                                  fontSize: 19,
-                                ),
+                      if (widget.transaksi.receipt != null)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Bukti Pembayaran',
+                              style: TextStyle(
+                                fontSize: 19,
                               ),
-                              DropdownButton(
-                                isDense: true,
-                                items: const [
-                                  DropdownMenuItem<String>(
-                                    value: 'prepared',
-                                    child: Text('Prepared'),
+                            ),
+                            CachedNetworkImage(
+                              imageUrl: widget.transaksi.receipt!,
+                              height: 300,
+                            ),
+                          ],
+                        ),
+                      if (DataStatic.user?.role == 'admin')
+                        Column(
+                          children: [
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Update Status',
+                                  style: TextStyle(
+                                    fontSize: 19,
                                   ),
-                                  DropdownMenuItem<String>(
-                                    value: 'request',
-                                    child: Text('Request'),
-                                  ),
-                                  DropdownMenuItem<String>(
-                                    value: 'accepted',
-                                    child: Text('Accepted'),
-                                  ),
-                                  DropdownMenuItem<String>(
-                                    value: 'packing',
-                                    child: Text('Packing'),
-                                  ),
-                                  DropdownMenuItem<String>(
-                                    value: 'send',
-                                    child: Text('Send'),
-                                  ),
-                                  DropdownMenuItem<String>(
-                                    value: 'done',
-                                    child: Text('Done'),
-                                  ),
-                                ],
-                                value: _status,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _status = value as String;
+                                ),
+                                DropdownButton(
+                                  isDense: true,
+                                  items: const [
+                                    DropdownMenuItem<String>(
+                                      value: 'prepared',
+                                      child: Text('Prepared'),
+                                    ),
+                                    DropdownMenuItem<String>(
+                                      value: 'request',
+                                      child: Text('Request'),
+                                    ),
+                                    DropdownMenuItem<String>(
+                                      value: 'accepted',
+                                      child: Text('Accepted'),
+                                    ),
+                                    DropdownMenuItem<String>(
+                                      value: 'packing',
+                                      child: Text('Packing'),
+                                    ),
+                                    DropdownMenuItem<String>(
+                                      value: 'send',
+                                      child: Text('Send'),
+                                    ),
+                                    DropdownMenuItem<String>(
+                                      value: 'done',
+                                      child: Text('Done'),
+                                    ),
+                                  ],
+                                  value: _status,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _status = value as String;
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 50,
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (_status == null) return;
+
+                                  TransaksiRepository()
+                                      .updateStatus(
+                                    _status!,
+                                    widget.transaksi.id,
+                                  )
+                                      .then((value) {
+                                    if (value != null) {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return const AlertDialog(
+                                            content: Text(
+                                              'Berhasil mengupdate transaksi',
+                                            ),
+                                          );
+                                        },
+                                      ).then((value) {
+                                        Navigator.of(context).pop(true);
+                                      });
+                                    }
                                   });
                                 },
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 50,
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                if (_status == null) return;
-
-                                TransaksiRepository()
-                                    .updateStatus(
-                                  _status!,
-                                  widget.transaksi.id,
-                                )
-                                    .then((value) {
-                                  if (value != null) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return const AlertDialog(
-                                          content: Text(
-                                            'Berhasil mengupdate transaksi',
-                                          ),
-                                        );
-                                      },
-                                    ).then((value) {
-                                      Navigator.of(context).pop(true);
-                                    });
-                                  }
-                                });
-                              },
-                              child: const Text(
-                                'Simpan',
-                                style: TextStyle(
-                                  fontSize: 20,
+                                child: const Text(
+                                  'Simpan',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
                                 ),
                               ),
-                            ),
-                          )
-                        ],
-                      )
-                  ],
+                            )
+                          ],
+                        )
+                    ],
+                  ),
                 )
               ],
             ),

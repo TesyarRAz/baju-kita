@@ -38,6 +38,24 @@ class _TransaksiPageState extends State<TransaksiPage> {
           ),
         ),
         centerTitle: true,
+        actions: [
+          if (DataStatic.user?.role == 'admin')
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(Routes.qrscan).then((value) {
+                  TransaksiRepository()
+                      .showByInvoice(value as String)
+                      .then((value) {
+                    Navigator.of(context).pushNamed(
+                      Routes.detailtransaksi,
+                      arguments: value,
+                    );
+                  });
+                });
+              },
+              icon: Icon(Icons.qr_code),
+            ),
+        ],
       ),
       body: ValueListenableBuilder<List<Transaksi>?>(
         valueListenable: _dataListenable,
@@ -61,11 +79,8 @@ class _TransaksiPageState extends State<TransaksiPage> {
             );
           }
 
-          return ListView.builder(
-            itemCount: list.length,
-            itemBuilder: (context, index) {
-              var data = list[index];
-
+          return ListView(
+            children: list.map((data) {
               return Card(
                 key: ValueKey(data.id),
                 child: InkWell(
@@ -149,7 +164,7 @@ class _TransaksiPageState extends State<TransaksiPage> {
                           (e) {
                             return ListTile(
                               leading: CachedNetworkImage(
-                                imageUrl: e.produk!.image,
+                                imageUrl: e.produk!.image!,
                               ),
                               title: Text(e.produk!.name),
                               subtitle: Text(
@@ -173,7 +188,7 @@ class _TransaksiPageState extends State<TransaksiPage> {
                   ),
                 ),
               );
-            },
+            }).toList(),
           );
         },
       ),

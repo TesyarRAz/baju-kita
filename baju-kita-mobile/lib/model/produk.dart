@@ -5,7 +5,7 @@ class Produk {
   final String bahan;
   final int stok;
   final int kategoriId;
-  final String image;
+  final String? image;
 
   Produk({
     required this.id,
@@ -14,7 +14,7 @@ class Produk {
     required this.bahan,
     required this.stok,
     required this.kategoriId,
-    required this.image,
+    this.image,
   });
 
   factory Produk.fromJson(Map<String, dynamic> map) {

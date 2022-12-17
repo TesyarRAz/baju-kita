@@ -156,9 +156,13 @@ class _ProdukPageState extends State<ProdukPage> {
                     );
                   });
                 } else if (value == 'tambah_produk') {
-                  Navigator.of(context).pushNamed(
+                  Navigator.of(context)
+                      .pushNamed(
                     Routes.adminprodukmodify,
-                  );
+                  )
+                      .then((value) {
+                    setState(() {});
+                  });
                 }
               },
               itemBuilder: ((context) {
@@ -288,6 +292,7 @@ class _ProdukPageState extends State<ProdukPage> {
                   crossAxisCount: 2,
                   children: snapshot.data!.map((e) {
                     return ProdukItemWidget(
+                      key: ValueKey(e.id),
                       produk: e,
                       onPoppedDetail: (value) {
                         if (value == true) {

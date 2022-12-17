@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
           secondary: Colors.white,
         ),
       ),
-      initialRoute: Routes.home,
+      initialRoute: Routes.splash,
       onGenerateRoute: Routes.onGenerateRoute,
     );
   }

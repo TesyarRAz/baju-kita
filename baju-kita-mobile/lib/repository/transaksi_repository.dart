@@ -124,4 +124,22 @@ class TransaksiRepository extends Repository {
 
     return Transaksi.fromJson(parseResponse(response.data).data);
   }
+
+  Future<Transaksi?> showByInvoice(String invoice) async {
+    var response = await Api.dio.get(
+      '/transaksi',
+      options: Options(
+        headers: dioAuth(),
+      ),
+      queryParameters: {
+        'byInvoice': invoice,
+      },
+    );
+
+    if (response.statusCode != 200) {
+      return null;
+    }
+
+    return Transaksi.fromJson(parseResponse(response.data).data);
+  }
 }

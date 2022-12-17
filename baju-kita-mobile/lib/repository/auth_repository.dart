@@ -48,4 +48,23 @@ class AuthRepository extends Repository {
 
     return User.fromJson(parseResponse(response.data).data);
   }
+
+  Future<bool> changePassword(String oldPassword, String newPassword) async {
+    var response = await Api.dio.post(
+      '/change-password',
+      data: {
+        'old_password': oldPassword,
+        'password': newPassword,
+      },
+      options: Options(
+        headers: dioAuth(),
+      ),
+    );
+
+    if (response.statusCode == 401) {
+      return false;
+    }
+
+    return true;
+  }
 }

@@ -17,6 +17,7 @@ class Produk extends Model
         'price' => 'integer',
         'stok' => 'integer',
         'image' => PublicFileClient::class,
+        'kategori_id' => 'integer',
     ];
 
     public function kategori()

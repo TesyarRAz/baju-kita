@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/register', [UserController::class, 'register']);
 Route::get('/user', [UserController::class, 'index']);
+Route::post('/change-password', [UserController::class, 'changePassword']);
 
 Route::apiResource('kategori', KategoriController::class);
 Route::apiResource('produk', ProdukController::class);

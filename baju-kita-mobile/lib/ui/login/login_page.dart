@@ -136,10 +136,13 @@ class _LoginPageState extends State<LoginPage> {
         (route) => false,
       );
     }, onError: (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Username atau password salah'),
-        ),
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Text('Username atau password salah'),
+          );
+        },
       );
     });
   }

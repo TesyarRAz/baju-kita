@@ -7,8 +7,10 @@ import 'package:image_picker/image_picker.dart';
 
 class UploadImageWidget extends StatefulWidget {
   final Function(Uint8List?, String?)? onImageChange;
+  final ImageProvider? tmpImage;
 
-  const UploadImageWidget({Key? key, this.onImageChange}) : super(key: key);
+  const UploadImageWidget({Key? key, this.onImageChange, this.tmpImage})
+      : super(key: key);
 
   @override
   State<UploadImageWidget> createState() => _UploadImageWidgetState();
@@ -78,13 +80,19 @@ class _UploadImageWidgetState extends State<UploadImageWidget> {
                   alignment: Alignment.center,
                   fit: BoxFit.fitWidth,
                 )
-              : const Text(
-                  'Tap untuk memilih gambar',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: 'Ubuntu',
-                  ),
-                ),
+              : (widget.tmpImage != null
+                  ? Image(
+                      image: widget.tmpImage!,
+                      width: 400,
+                      height: 300,
+                    )
+                  : const Text(
+                      'Tap untuk memilih gambar',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Ubuntu',
+                      ),
+                    )),
         ),
       ),
     );
