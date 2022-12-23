@@ -107,7 +107,7 @@ class _DetailTransaksiPageState extends State<DetailTransaksiPage> {
                                   child: Row(
                                     children: [
                                       CachedNetworkImage(
-                                        imageUrl: data.produk!.image!,
+                                        imageUrl: data.produk?.image ?? '',
                                         height: 80,
                                       ),
                                       Padding(
@@ -117,7 +117,7 @@ class _DetailTransaksiPageState extends State<DetailTransaksiPage> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              data.produk!.name,
+                                              data.produk?.name ?? '',
                                               style: const TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.bold,
@@ -128,7 +128,7 @@ class _DetailTransaksiPageState extends State<DetailTransaksiPage> {
                                                 locale: 'id',
                                                 symbol: 'Rp. ',
                                                 decimalDigits: 0,
-                                              ).format(data.produk!.price),
+                                              ).format(data.produk?.price),
                                               style: const TextStyle(
                                                 fontSize: 14,
                                               ),
@@ -181,10 +181,13 @@ class _DetailTransaksiPageState extends State<DetailTransaksiPage> {
                           fontSize: 19,
                         ),
                       ),
-                      Text(
-                        'Alamat Penerima: ${widget.transaksi.address}',
-                        style: const TextStyle(
-                          fontSize: 19,
+                      Visibility(
+                        visible: widget.transaksi.address?.isNotEmpty ?? false,
+                        child: Text(
+                          'Alamat Penerima: ${widget.transaksi.address}',
+                          style: const TextStyle(
+                            fontSize: 19,
+                          ),
                         ),
                       ),
                       const SizedBox(

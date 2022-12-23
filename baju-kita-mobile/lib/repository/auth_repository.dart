@@ -34,7 +34,7 @@ class AuthRepository extends Repository {
     return ResponseLogin.fromJson(parseResponse(response.data).data);
   }
 
-  Future<User?> register(Register register) async {
+  Future<bool> register(Register register) async {
     var response = await Api.dio.post('/register', data: {
       'name': register.name,
       'username': register.username,
@@ -43,10 +43,10 @@ class AuthRepository extends Repository {
     });
 
     if (response.statusCode == 401) {
-      return null;
+      return false;
     }
 
-    return User.fromJson(parseResponse(response.data).data);
+    return true;
   }
 
   Future<bool> changePassword(String oldPassword, String newPassword) async {

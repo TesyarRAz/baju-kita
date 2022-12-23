@@ -43,17 +43,36 @@ class _TransaksiPageState extends State<TransaksiPage> {
             IconButton(
               onPressed: () {
                 Navigator.of(context).pushNamed(Routes.qrscan).then((value) {
-                  TransaksiRepository()
-                      .showByInvoice(value as String)
-                      .then((value) {
-                    Navigator.of(context).pushNamed(
-                      Routes.detailtransaksi,
-                      arguments: value,
+                  if (value != null) {
+                    print(value);
+                    TransaksiRepository()
+                        .showByInvoice(value as String)
+                        .then((value) {
+                      Navigator.of(context).pushNamed(
+                        Routes.detailtransaksi,
+                        arguments: value,
+                      );
+                    });
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          content: Text('Tidak bisa meload kode invoice'),
+                        );
+                      },
                     );
-                  });
+                  }
                 });
               },
               icon: Icon(Icons.qr_code),
+            ),
+          if (DataStatic.user != null && DataStatic.user?.role != 'admin')
+            IconButton(
+              icon: const Icon(Icons.shopping_cart),
+              onPressed: () {
+                Navigator.of(context).pushNamed(Routes.keranjang);
+              },
             ),
         ],
       ),
@@ -160,19 +179,19 @@ class _TransaksiPageState extends State<TransaksiPage> {
                         ),
                       ),
                       Column(
-                        children: data.detailTransaksis!.map(
+                        children: (data.detailTransaksis ?? []).map(
                           (e) {
                             return ListTile(
                               leading: CachedNetworkImage(
-                                imageUrl: e.produk!.image!,
+                                imageUrl: e.produk?.image ?? "",
                               ),
-                              title: Text(e.produk!.name),
+                              title: Text(e.produk?.name ?? ''),
                               subtitle: Text(
                                 NumberFormat.currency(
                                   locale: 'id',
                                   symbol: 'Rp. ',
                                   decimalDigits: 0,
-                                ).format(e.produk!.price),
+                                ).format(e.produk?.price ?? 0),
                               ),
                               trailing: Text(
                                 e.qty.toString(),

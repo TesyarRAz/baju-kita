@@ -15,6 +15,10 @@ class DetailTransaksi extends Model
         'total_price' => 'integer',
     ];
 
+    protected $with = [
+        'produk',
+    ];
+
     public function transaksi()
     {
         return $this->belongsTo(Transaksi::class);

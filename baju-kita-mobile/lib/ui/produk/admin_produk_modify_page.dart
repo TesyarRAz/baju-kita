@@ -43,11 +43,13 @@ class _AdminProdukModifyPageState extends State<AdminProdukModifyPage> {
       setState(() {
         judul = "UBAH PRODUK";
         tombolSubmit = "UBAH";
-        _namaProdukTextboxController.text = widget.produk!.name;
-        _bahanProdukTextboxController.text = widget.produk!.bahan;
-        _stokProdukTextboxController.text = widget.produk!.stok.toString();
-        _hargaProdukTextboxController.text = widget.produk!.price.toString();
-        _kategori = widget.produk!.kategoriId;
+        _namaProdukTextboxController.text = widget.produk?.name ?? '';
+        _bahanProdukTextboxController.text = widget.produk?.bahan ?? '';
+        _stokProdukTextboxController.text =
+            widget.produk?.stok.toString() ?? '';
+        _hargaProdukTextboxController.text =
+            widget.produk?.price.toString() ?? '';
+        _kategori = widget.produk?.kategoriId;
       });
     } else {
       judul = "TAMBAH PRODUK";
@@ -110,7 +112,7 @@ class _AdminProdukModifyPageState extends State<AdminProdukModifyPage> {
       keyboardType: TextInputType.text,
       controller: _namaProdukTextboxController,
       validator: (value) {
-        if (value!.isEmpty) {
+        if (value?.isEmpty ?? true) {
           return "Nama Produk Harus Diisi";
         }
         return null;
@@ -129,7 +131,7 @@ class _AdminProdukModifyPageState extends State<AdminProdukModifyPage> {
       keyboardType: TextInputType.text,
       controller: _bahanProdukTextboxController,
       validator: (value) {
-        if (value!.isEmpty) {
+        if (value?.isEmpty ?? true) {
           return "Bahan Harus Diisi";
         }
         return null;
@@ -148,7 +150,7 @@ class _AdminProdukModifyPageState extends State<AdminProdukModifyPage> {
       keyboardType: TextInputType.number,
       controller: _stokProdukTextboxController,
       validator: (value) {
-        if (value!.isEmpty) {
+        if (value?.isEmpty ?? true) {
           return "Stok Harus Diisi";
         }
         return null;
@@ -167,7 +169,7 @@ class _AdminProdukModifyPageState extends State<AdminProdukModifyPage> {
       keyboardType: TextInputType.number,
       controller: _hargaProdukTextboxController,
       validator: (value) {
-        if (value!.isEmpty) {
+        if (value?.isEmpty ?? true) {
           return "Harga harus diisi";
         }
         return null;
@@ -221,7 +223,7 @@ class _AdminProdukModifyPageState extends State<AdminProdukModifyPage> {
         _imageName = name;
       },
       tmpImage: widget.produk?.image != null
-          ? NetworkImage(widget.produk!.image!)
+          ? NetworkImage(widget.produk?.image ?? '')
           : null,
     );
   }
@@ -238,7 +240,7 @@ class _AdminProdukModifyPageState extends State<AdminProdukModifyPage> {
           ),
         ),
         onPressed: () {
-          var validate = _formKey.currentState!.validate();
+          var validate = _formKey.currentState?.validate() ?? false;
           if (validate) {
             if (!_isLoading) {
               if (widget.produk != null) {
@@ -304,7 +306,7 @@ class _AdminProdukModifyPageState extends State<AdminProdukModifyPage> {
       _isLoading = true;
     });
     Produk updateProduk = Produk(
-      id: widget.produk!.id,
+      id: widget.produk?.id ?? 0,
       name: _namaProdukTextboxController.text,
       price: int.parse(_hargaProdukTextboxController.text),
       bahan: _bahanProdukTextboxController.text,

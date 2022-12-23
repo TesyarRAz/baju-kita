@@ -25,7 +25,13 @@ class TransaksiController extends Controller
 
         $transaksi->with('detail_transaksis.produk');
 
-        $transaksi = $transaksi->orderByRaw("FIELD(session_status, 'prepared', 'request', 'accepted', 'packing', 'send', 'done')")->get();
+        $transaksi = $transaksi->orderByRaw("FIELD(session_status, 'prepared', 'request', 'accepted', 'packing', 'send', 'done')");
+
+        if ($request->byInvoice) {
+            $transaksi = $transaksi->where('invoice_code', $request->byInvoice)->first();
+        } else {
+            $transaksi = $transaksi->get();
+        }
 
         return $this->response($transaksi, 1, 'Success');
     }

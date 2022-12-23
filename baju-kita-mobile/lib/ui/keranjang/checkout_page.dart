@@ -294,15 +294,27 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         )
                             .then((value) {
                           if (value != null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content:
-                                    Text('Berhasil simpan data pengiriman'),
-                              ),
-                            );
-                            Navigator.of(context).pushReplacementNamed(
-                              Routes.detailtransaksi,
-                              arguments: value,
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  content: Text('Berhasil simpan transaksi'),
+                                );
+                              },
+                            ).then((value) {
+                              Navigator.of(context).pushReplacementNamed(
+                                Routes.detailtransaksi,
+                                arguments: value,
+                              );
+                            });
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  content: Text('Gagal simpan transaksi'),
+                                );
+                              },
                             );
                           }
                         }, onError: (error) {

@@ -90,7 +90,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     if (snapshot.hasData) {
                       return StaggeredGrid.count(
                         crossAxisCount: 2,
-                        children: snapshot.data!.map((e) {
+                        children: (snapshot.data ?? []).map((e) {
                           return ProdukItemWidget(
                             produk: e,
                           );
@@ -136,11 +136,10 @@ class _DashboardPageState extends State<DashboardPage> {
                       ),
                     ),
                     Card(
-                      child: ListView(
-                        shrinkWrap: true,
+                      child: Column(
                         children: ListTile.divideTiles(
                           context: context,
-                          tiles: snapshot.data!.map((e) {
+                          tiles: (snapshot.data ?? []).map((e) {
                             return ListTile(
                               title: Text(e.name),
                               onTap: () {

@@ -46,6 +46,7 @@ class _SplashPageState extends State<SplashPage>
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.black,
       body: Center(
         child: AnimatedBuilder(
           animation: iconAnimation,
@@ -57,8 +58,8 @@ class _SplashPageState extends State<SplashPage>
           },
           child: Image.asset(
             'assets/images/about.jpg',
-            width: 200,
-            height: 200,
+            width: 400,
+            height: 400,
           ),
         ),
       ),

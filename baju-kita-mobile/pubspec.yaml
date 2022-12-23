@@ -46,7 +46,7 @@ dependencies:
   basic_utils: ^5.4.2
   qr_flutter: ^4.0.0
   image_picker: ^0.8.6
-  qr_code_scanner: ^1.0.1
+  mobile_scanner: ^2.1.0
 
 dev_dependencies:
   flutter_test:

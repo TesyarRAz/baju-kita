@@ -124,11 +124,11 @@ class _LoginPageState extends State<LoginPage> {
       }
 
       // DataStatic.user
-      DataStatic.token = login!.token;
-      DataStatic.user = login.user;
+      DataStatic.token = login?.token;
+      DataStatic.user = login?.user;
 
       SharedPreferences.getInstance().then((pref) {
-        pref.setString("token", login.token);
+        pref.setString("token", login?.token ?? '');
       });
 
       Navigator.of(context).pushNamedAndRemoveUntil(

@@ -242,7 +242,7 @@ class _ProdukPageState extends State<ProdukPage> {
                               ),
                             ],
                           ),
-                          ...snapshot.data!.map((e) {
+                          ...(snapshot.data ?? []).map((e) {
                             return Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -290,7 +290,7 @@ class _ProdukPageState extends State<ProdukPage> {
               if (snapshot.hasData) {
                 return StaggeredGrid.count(
                   crossAxisCount: 2,
-                  children: snapshot.data!.map((e) {
+                  children: (snapshot.data ?? []).map((e) {
                     return ProdukItemWidget(
                       key: ValueKey(e.id),
                       produk: e,

@@ -141,14 +141,14 @@ class _RegisterPageState extends State<RegisterPage> {
       controller: _emailTextboxController,
       validator: (value) {
         // Validasi harus diisi
-        if (value!.isEmpty) {
+        if (value?.isEmpty ?? true) {
           return "Email harus diisi";
         }
         // Validasi Email
         Pattern pattern =
             r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zAZ]{2,}))$';
         RegExp regex = RegExp(pattern.toString());
-        if (!regex.hasMatch(value)) {
+        if (!regex.hasMatch(value ?? '')) {
           return "Email Tidak Valid";
         }
         return null;
@@ -166,7 +166,7 @@ class _RegisterPageState extends State<RegisterPage> {
       controller: _usernameTextboxController,
       validator: (value) {
         // Validasi harus diisi
-        if (value!.isEmpty) {
+        if (value?.isEmpty ?? true) {
           return "Username harus diisi";
         }
         return null;
@@ -249,6 +249,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _submit() {
+    if (_isLoading) return;
     _isLoading = true;
 
     var register = Register(
@@ -260,11 +261,15 @@ class _RegisterPageState extends State<RegisterPage> {
 
     AuthRepository().register(register).then((value) {
       _isLoading = false;
-      if (value == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Username atau password salah'),
-          ),
+      if (!value) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return const AlertDialog(
+              title: Text('Informasi'),
+              content: Text('Gagal register, silahkan coba lagi'),
+            );
+          },
         );
         return;
       }
@@ -281,6 +286,16 @@ class _RegisterPageState extends State<RegisterPage> {
         Navigator.of(context)
             .pushNamedAndRemoveUntil(Routes.login, (route) => false);
       });
+    }).catchError((error) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return const AlertDialog(
+            title: Text('Informasi'),
+            content: Text('Gagal register, silahkan coba lagi'),
+          );
+        },
+      );
     });
   }
 }
